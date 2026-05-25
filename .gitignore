@@ -1,0 +1,12 @@
+# The Next.js app lives in its own git repository / remote
+expense-tracker/
+
+# OS / editor
+.DS_Store
+*.log
+
+# Node (et-mcp has its own .gitignore too)
+node_modules/
+dist/
+.env
+.env.local
