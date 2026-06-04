@@ -21,3 +21,5 @@ services:
       # Set in the Render dashboard (never committed):
       - key: DATABASE_URL
         sync: false
+      - key: MCP_INTERNAL_JWT_SECRET
+        sync: false
