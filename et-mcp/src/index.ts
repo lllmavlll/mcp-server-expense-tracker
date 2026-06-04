@@ -1,4 +1,8 @@
-import "dotenv/config"
+import { config as loadEnv } from "dotenv"
+// override:true so the project's .env wins over stray shell vars (e.g. a
+// PORT exported in the user's profile). For a local dev server the .env
+// file is the source of truth.
+loadEnv({ override: true })
 import { startHttp } from "./transports/http.js"
 import { startStdio } from "./transports/stdio.js"
 import { log } from "./lib/logger.js"

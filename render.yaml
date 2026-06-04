@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: et-mcp
+    runtime: node
+    plan: free
+    rootDir: et-mcp
+    # --include=dev so typescript/tsc are available for the build even though
+    # NODE_ENV=production is set (npm would otherwise prune devDependencies).
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: MCP_TRANSPORT
+        value: http
+      - key: LOG_LEVEL
+        value: info
+      # Set in the Render dashboard (never committed):
+      - key: DATABASE_URL
+        sync: false
