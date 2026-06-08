@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http"
 import { serve } from "@hono/node-server"
+import { RESPONSE_ALREADY_SENT } from "@hono/node-server/utils/response"
 import { Hono } from "hono"
 import { sql } from "drizzle-orm"
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js"
@@ -58,7 +59,12 @@ export async function startHttp(port: number): Promise<void> {
     await runWithContext(ctx, async () => {
       await transport.handleRequest(incoming, outgoing)
     })
-    return new Response(null)
+    // The MCP transport writes headers + body directly to the raw Node
+    // `outgoing` stream. Returning a normal Response here would make
+    // @hono/node-server try to writeHead() on that same stream again, throwing
+    // ERR_HTTP_HEADERS_SENT. This sentinel tells the adapter the response is
+    // already flushed so it skips its own write.
+    return RESPONSE_ALREADY_SENT
   })
 
   serve({ fetch: app.fetch, port }, (info) => {
